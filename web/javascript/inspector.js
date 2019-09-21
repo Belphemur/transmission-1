@@ -341,6 +341,23 @@ function Inspector(controller) {
             setTextContent(e.error_lb, str || none);
 
             //
+            // labels
+            //
+
+            if (torrents.length < 1) {
+                str = none;
+            } else {
+                str = torrents[0].getLabelsArray().join(", ");
+                for (i = 0; t = torrents[i]; ++i) {
+                    if (str != t.getErrorString().join(", ")) {
+                        str = mixed;
+                        break;
+                    };
+                };
+            };
+            setTextContent(e.labels, str || none);
+
+            //
             // size
             //
 
@@ -837,6 +854,7 @@ function Inspector(controller) {
             data.elements.origin_lb = $('#inspector-info-origin')[0];
             data.elements.comment_lb = $('#inspector-info-comment')[0];
             data.elements.name_lb = $('#torrent_inspector_name')[0];
+            data.elements.labels = $('#inspector-labels')[0];
 
             // force initial 'N/A' updates on all the pages
             updateInspector();

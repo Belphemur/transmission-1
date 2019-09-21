@@ -236,6 +236,9 @@ Torrent.prototype = {
     getErrorString: function () {
         return this.fields.errorString;
     },
+    getLabelsArray: function () {
+        return this.fields.labels;
+    },
     getETA: function () {
         return this.fields.eta;
     },
