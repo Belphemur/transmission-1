@@ -73,6 +73,7 @@ Transmission.prototype = {
         e.val(this[Prefs._FilterMode]);
         e.change($.proxy(this.onFilterModeClicked, this));
         $('#filter-tracker').change($.proxy(this.onFilterTrackerClicked, this));
+        $('#filter-label').change($.proxy(this.onFilterLabelClicked,this));
 
         if (!isMobileDevice) {
             $(document).bind('keydown', $.proxy(this.keyDown, this));
@@ -1423,9 +1424,38 @@ Transmission.prototype = {
     },
 
     updateFilterSelect: function () {
-        var i, names, name, str, o;
+        var i, names, name, str, o, labels, label;
         var e = $('#filter-tracker');
         var trackers = this.getTrackers();
+
+        var l = $('#filter-label');
+        var labelsList = this.getLabels();
+
+
+        if (!this.filterLabel)
+            str = '<option value="all" selected="selected">All</option>';
+        else
+            str = '<option value="all">All</option>';
+
+        // build a sorted list of labels
+        labels = [];
+        for (name in labelsList) {
+            labels.push(name);
+        };
+        labels.sort();
+        
+        for (i = 0; label = labels[i]; ++i) {
+            str += '<option value="' + label + '"';
+            if (label === this.filterLabel) {
+                str += ' selected="selected"';
+            };
+            str += '>' + label + '</option>';
+        }
+
+        if (!this.filterLabelStr || (this.filterLabelStr !== str)) {
+            this.filterLabelStr = str;
+            $('#filter-label').html(str);
+        }
 
         // build a sorted list of names
         names = [];
@@ -1589,6 +1619,7 @@ Transmission.prototype = {
         var filter_mode = this[Prefs._FilterMode];
         var filter_text = this.filterText;
         var filter_tracker = this.filterTracker;
+        var filter_label = this.filterLabel;
         var renderer = this.torrentRenderer;
         var list = this.elements.torrent_list;
 
@@ -1631,7 +1662,7 @@ Transmission.prototype = {
         for (i = 0; row = dirty_rows[i]; ++i) {
             id = row.getTorrentId();
             t = this._torrents[id];
-            if (t && t.test(filter_mode, filter_text, filter_tracker)) {
+            if (t && t.test(filter_mode, filter_text, filter_tracker, filter_label)) {
                 tmp.push(row);
             };
             delete this.dirtyTorrents[id];
@@ -1642,7 +1673,7 @@ Transmission.prototype = {
         // but don't already have a row
         for (id in this.dirtyTorrents) {
             t = this._torrents[id];
-            if (t && t.test(filter_mode, filter_text, filter_tracker)) {
+            if (t && t.test(filter_mode, filter_text, filter_tracker, filter_label)) {
                 row = new TorrentRow(renderer, this, t);
                 e = row.getElement();
                 e.row = row;
@@ -1738,6 +1769,21 @@ Transmission.prototype = {
         this.filterTracker = domain;
         this.refilter(true);
     },
+    onFilterLabelClicked: function(ev) {
+        var label = $('#filter-label').val();
+        this.setFilterLabel(label==='all' ? null : label);
+    },
+
+    setFilterLabel: function(label) {
+        // update which tracker is selected in the popup
+        var key = label ? label : 'all',
+            id = '#show-label-' + key;
+        $(id).addClass('selected').siblings().removeClass('selected');
+
+        this.filterLabel     = label;
+        this.refilter(true);
+    },
+    
 
     // example: "tracker.ubuntu.com" returns "ubuntu.com"
     getDomainName: function (host) {
@@ -1759,6 +1805,25 @@ Transmission.prototype = {
             name = name.slice(0, dot);
         };
         return name;
+    },
+
+    getLabels: function () {
+        var ret = {};
+
+        var torrents = this.getAllTorrents();
+        for (var i = 0, torrent; torrent = torrents[i]; ++i) {
+            var labels = torrent.getLabelsArray();
+
+            for (var j = 0, label; label = labels[j]; ++j) {
+                   if(ret[label]) {
+                       ret[label]++;
+                       continue;
+                   }
+                   ret[label] = 1;
+                };
+            }
+
+        return ret;
     },
 
     getTrackers: function () {
