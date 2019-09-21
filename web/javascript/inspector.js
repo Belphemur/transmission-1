@@ -349,7 +349,7 @@ function Inspector(controller) {
             } else {
                 str = torrents[0].getLabelsArray().join(", ");
                 for (i = 0; t = torrents[i]; ++i) {
-                    if (str != t.getErrorString().join(", ")) {
+                    if (str != t.getLabelsArray().join(", ")) {
                         str = mixed;
                         break;
                     };
