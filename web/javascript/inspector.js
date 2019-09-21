@@ -347,15 +347,15 @@ function Inspector(controller) {
             if (torrents.length < 1) {
                 str = none;
             } else {
-                str = torrents[0].getLabelsArray().join(", ");
+                str = torrents[0].getLabelsArray().map(colorByHashCode).join(", ");
                 for (i = 0; t = torrents[i]; ++i) {
-                    if (str != t.getLabelsArray().join(", ")) {
+                    if (str != t.getLabelsArray().map(colorByHashCode).join(", ")) {
                         str = mixed;
                         break;
                     };
                 };
             };
-            setTextContent(e.labels, str || none);
+            setInnerHTML(e.labels, str || none);
 
             //
             // size
