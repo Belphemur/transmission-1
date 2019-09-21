@@ -465,7 +465,6 @@ tr_priority_t tr_ctorGetBandwidthPriority(tr_ctor const* ctor)
 
 void tr_ctorSetLabels(tr_ctor* ctor, tr_ptrArray* labels)
 {
-    tr_ptrArrayDestruct(&ctor->labels, tr_free);
     ctor->labels = TR_PTR_ARRAY_INIT;
     char** l = (char**)tr_ptrArrayBase(labels);
     int const n = tr_ptrArraySize(labels);
@@ -473,7 +472,6 @@ void tr_ctorSetLabels(tr_ctor* ctor, tr_ptrArray* labels)
     {
         tr_ptrArrayAppend(&ctor->labels, tr_strdup(l[i]));
     }
-
 }
 
 bool tr_ctorGetLabels(tr_ctor const* ctor, tr_ptrArray* labels)
