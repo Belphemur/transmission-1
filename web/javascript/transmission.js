@@ -1449,7 +1449,7 @@ Transmission.prototype = {
             if (label === this.filterLabel) {
                 str += ' selected="selected"';
             };
-            str += '>' + label + '</option>';
+            str += '>' + colorByHashCode(label) + '</option>';
         }
 
         if (!this.filterLabelStr || (this.filterLabelStr !== str)) {
