@@ -480,7 +480,7 @@ Torrent.prototype = {
         };
 
         if(pass && label && label.length) {
-            pass = this.getLabelsArray().contains(label);
+            pass = this.getLabelsArray().includes(label);
         }
 
         return pass;
