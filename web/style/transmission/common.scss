@@ -364,10 +364,11 @@ ul.torrent_list
 
 		div.torrent_progress_details,
 		div.torrent_peer_details {
-			clear: left;
+			clear: none;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
+			margin-left: 26px;
 		}
 
 		div.torrent_progress_details.error,
@@ -410,6 +411,7 @@ ul.torrent_list
 		&.full {
 			margin-top: 2px;
 			margin-bottom: 5px;
+			margin-left: 26px;
 		}
 	}
 	div.torrent_peer_details.compact

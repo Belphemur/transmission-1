@@ -281,7 +281,7 @@ TorrentRendererFull.prototype = {
         // group
         var firstlabel = t.getLabelsArray()[0];
         if(firstlabel) {
-            $(root._label_container).attr('style', 'color: ' + firstlabel.getHashCode().intToHSL());
+            $(root._label_container).attr('style', 'background-color: ' + firstlabel.getHashCode().intToHSL());
         }
 
         // progressbar
