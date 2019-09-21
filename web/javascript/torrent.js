@@ -77,7 +77,8 @@ Torrent.Fields.Stats = [
     'downloadDir',
     'uploadedEver',
     'uploadRatio',
-    'webseedsSendingToUs'
+    'webseedsSendingToUs',
+    'labels'
 ];
 
 // fields used by the inspector which only need to be loaded once
