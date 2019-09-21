@@ -942,15 +942,10 @@ static char const* torrentGet(tr_session* session, tr_variant* args_in, tr_varia
     return errmsg;
 }
 
-/***
-****
-***/
-
-static char const* setLabels(tr_torrent* tor, tr_variant* list)
-{
+const char *parseLabels(const tr_variant *list, tr_ptrArray * labels) {
     int const n = tr_variantListSize(list);
     char const* errmsg = NULL;
-    tr_ptrArray labels = TR_PTR_ARRAY_INIT;
+    *labels = TR_PTR_ARRAY_INIT;
     int labelcount = 0;
     for (int i = 0; i < n; i++)
     {
@@ -975,7 +970,7 @@ static char const* setLabels(tr_torrent* tor, tr_variant* list)
                 bool dup = false;
                 for (int j = 0; j < labelcount; j++)
                 {
-                    if (tr_strcmp0(label, (char*)tr_ptrArrayNth(&labels, j)) == 0)
+                    if (tr_strcmp0(label, (char*)tr_ptrArrayNth(labels, j)) == 0)
                     {
                         dup = true;
                         break;
@@ -988,7 +983,7 @@ static char const* setLabels(tr_torrent* tor, tr_variant* list)
                 }
             }
 
-            tr_ptrArrayAppend(&labels, label);
+            tr_ptrArrayAppend(labels, label);
             labelcount++;
 
             if (errmsg != NULL)
@@ -997,6 +992,20 @@ static char const* setLabels(tr_torrent* tor, tr_variant* list)
             }
         }
     }
+
+
+    return errmsg;
+}
+
+/***
+****
+***/
+
+static char const* setLabels(tr_torrent* tor, tr_variant* list)
+{
+    const char *errmsg;
+    tr_ptrArray labels;
+    errmsg = parseLabels(list, &labels);
 
     if (errmsg == NULL)
     {
@@ -1814,6 +1823,7 @@ static char const* torrentAdd(tr_session* session, tr_variant* args_in, tr_varia
     tr_variant* l;
     char const* cookies = NULL;
     tr_ctor* ctor = tr_ctorNew(session);
+    tr_variant* labels;
 
     /* set the optional arguments */
 
@@ -1837,6 +1847,16 @@ static char const* torrentAdd(tr_session* session, tr_variant* args_in, tr_varia
     if (tr_variantDictFindInt(args_in, TR_KEY_bandwidthPriority, &i))
     {
         tr_ctorSetBandwidthPriority(ctor, i);
+    }
+
+    if (tr_variantDictFindList(args_in, TR_KEY_labels, &labels))
+    {
+        tr_ptrArray labelsParsed;
+        const char* errmsg = parseLabels(labels, &labelsParsed);
+        if(errmsg == NULL) {
+            tr_ctorSetLabels(ctor, &labelsParsed);
+        }
+        tr_ptrArrayDestruct(&labelsParsed, tr_free);
     }
 
     if (tr_variantDictFindList(args_in, TR_KEY_files_unwanted, &l))
@@ -1879,6 +1899,8 @@ static char const* torrentAdd(tr_session* session, tr_variant* args_in, tr_varia
         tr_free(files);
     }
 
+
+
     dbgmsg("torrentAdd: filename is \"%s\"", filename ? filename : " (null)");
 
     if (isCurlURL(filename))
@@ -1912,6 +1934,7 @@ static char const* torrentAdd(tr_session* session, tr_variant* args_in, tr_varia
 
         tr_free(fname);
     }
+    tr_variantFree(labels);
 
     return NULL;
 }

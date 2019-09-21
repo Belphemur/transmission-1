@@ -31,6 +31,7 @@ extern "C"
 #include <time.h> /* time_t */
 
 #include "tr-macros.h"
+#include "ptrarray.h"
 
 typedef uint32_t tr_file_index_t;
 typedef uint32_t tr_piece_index_t;
@@ -259,6 +260,21 @@ void tr_ctorSetBandwidthPriority(tr_ctor* ctor, tr_priority_t priority);
  * @brief Get the torrent's bandwidth priority.
  */
 tr_priority_t tr_ctorGetBandwidthPriority(tr_ctor const* ctor);
+
+
+/**
+ *
+ * @brief Set the labels
+ * @param ctor
+ * @param labels
+ */
+void tr_ctorSetLabels(tr_ctor* ctor, struct tr_ptrArray* labels);
+/**
+ * Get the labels
+ * @param ctor
+ * @return
+ */
+bool tr_ctorGetLabels(tr_ctor const* ctor, struct tr_ptrArray *labels);
 
 /**
  * @brief set the per-session incomplete download folder.

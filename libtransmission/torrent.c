@@ -933,6 +933,7 @@ static void torrentInit(tr_torrent* tor, tr_ctor const* ctor)
     char const* dir;
     bool isNewTorrent;
     static int nextUniqueId = 1;
+    tr_ptrArray labels;
 
     tor->session = session;
     tor->uniqueId = nextUniqueId++;
@@ -955,6 +956,10 @@ static void torrentInit(tr_torrent* tor, tr_ctor const* ctor)
     if (tr_sessionIsIncompleteDirEnabled(session))
     {
         tor->incompleteDir = tr_strdup(dir);
+    }
+
+    if(tr_ctorGetLabels(ctor, &labels)) {
+        tr_torrentSetLabels(tor, &labels);
     }
 
     tr_bandwidthConstruct(&tor->bandwidth, session, &session->bandwidth);
