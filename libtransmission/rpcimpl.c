@@ -1934,7 +1934,6 @@ static char const* torrentAdd(tr_session* session, tr_variant* args_in, tr_varia
 
         tr_free(fname);
     }
-    tr_variantFree(labels);
 
     return NULL;
 }
