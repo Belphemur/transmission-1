@@ -123,10 +123,13 @@ TorrentRendererHelper.formatETA = function (t) {
 function TorrentRendererFull() {};
 TorrentRendererFull.prototype = {
     createRow: function () {
-        var root, name, peers, progressbar, details, image, button;
+        var root, name, peers, progressbar, details, image, button, labelColor;
 
         root = document.createElement('li');
         root.className = 'torrent';
+
+        labelColor = document.createElement('div');
+        labelColor.className = 'torrent_first_label';
 
         name = document.createElement('div');
         name.className = 'torrent_name';
@@ -143,6 +146,7 @@ TorrentRendererFull.prototype = {
         button = document.createElement('a');
         button.appendChild(image);
 
+        root.appendChild(labelColor);
         root.appendChild(name);
         root.appendChild(peers);
         root.appendChild(button);
@@ -150,6 +154,7 @@ TorrentRendererFull.prototype = {
         root.appendChild(details);
 
         root._name_container = name;
+        root._label_container = labelColor;
         root._peer_details_container = peers;
         root._progress_details_container = details;
         root._progressbar = progressbar;
@@ -272,6 +277,12 @@ TorrentRendererFull.prototype = {
     render: function (controller, t, root) {
         // name
         setTextContent(root._name_container, t.getName());
+
+        // group
+        var firstlabel = t.getLabelsArray()[0];
+        if(firstlabel) {
+            $(root._label_container).attr('style', 'color: ' + firstlabel.getHashCode().intToHSL());
+        }
 
         // progressbar
         TorrentRendererHelper.renderProgressbar(controller, t, root._progressbar);

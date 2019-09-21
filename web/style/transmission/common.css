@@ -229,6 +229,13 @@ ul.torrent_list {
         background-position: left center; }
       ul.torrent_list li.torrent a:hover div.torrent_resume {
         background-position: center center; }
+      ul.torrent_list li.torrent div.torrent_first_label {
+        height: 58px;
+        float: left;
+        width: 16px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 3px;
+        margin-top: 2px; }
     ul.torrent_list li.torrent div.torrent_name {
       font-size: 1.3em;
       font-weight: bold;
