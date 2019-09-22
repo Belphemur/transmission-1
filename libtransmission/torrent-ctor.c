@@ -519,5 +519,6 @@ void tr_ctorFree(tr_ctor* ctor)
     tr_free(ctor->low);
     tr_free(ctor->high);
     tr_free(ctor->normal);
+    tr_ptrArrayDestruct(&ctor->labels, tr_free);
     tr_free(ctor);
 }
